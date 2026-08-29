@@ -19,7 +19,7 @@ variable "ami_id" {
 variable "key_name" {
   description = "Name of the existing EC2 key pair for SSH access"
   type        = string
-  default     = "88chinna.pem"  # set this to your key pair name, or leave blank if not needed
+  default     = "88chinna"  # set this to your key pair name, or leave blank if not needed
 }
 
 variable "instance_name" {
