@@ -38,6 +38,7 @@ pipeline{
 post {
         success {
             echo 'Infra applied successfully.'
+             cleanWs()
         }
         failure {
             echo 'Something went wrong.'
