@@ -3,6 +3,7 @@ pipeline{
     stages{
         stage('check out scm'){
             steps{
+                sh 'ls -a'
                 //cleanWs()
                // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
             }
