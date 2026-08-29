@@ -1,0 +1,45 @@
+pipeline{
+    agent any 
+    stages{
+        stage('check out scm'){
+            steps{
+                cleanWs()
+               // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
+            }
+        }
+        stage('terraform run'){
+            steps{
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-creds'
+                ]]) {
+            dir('tf-resources-ec2'){
+                sh 'terraform init -input=false'
+                sh 'terraform plan -out=tfplan -input=false'
+                sh 'terraform apply -input=false -auto-approve tfplan'
+            }
+            }
+        }
+        }
+        stage('destroy'){
+            steps{
+            withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-creds'
+                ]]) {
+            dir('tf-resources-ec2'){
+                sh 'terraform destroy -input=false -auto-approve'
+            }
+            }
+        }
+    }
+}
+post {
+        success {
+            echo 'Infra applied successfully.'
+        }
+        failure {
+            echo 'Something went wrong.'
+        }
+    }
+}
