@@ -1,6 +1,7 @@
 resource "aws_security_group" "demo_sg" {
   name        = "demo-instance-sg"
   description = "Allow SSH and HTTP"
+  vpc_id      = data.aws_vpc.selected.id   # ← comes from 2-data.tf
 
   ingress {
     description = "SSH"
@@ -50,3 +51,4 @@ output "instance_id" {
   description = "ID of the EC2 instance"
   value       = aws_instance.demo_ec2.id
 }
+
