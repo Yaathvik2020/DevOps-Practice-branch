@@ -10,9 +10,9 @@ pipeline{
             }
         }
        stage('checkout SCM') {
-            steps{
-               sh 'ls -ltr'          
-               // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
+            steps{               
+                git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
+                sh 'ls -ltr'  
              }
        }
        stage('Run All Terraform Steps') {
