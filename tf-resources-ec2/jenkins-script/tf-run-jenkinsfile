@@ -21,7 +21,7 @@ pipeline{
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds'
                 ]]) {
-				dir('tf-resources-ec2') {
+				dir('practice-branch/tf-resources-ec2') {
                     sh 'terraform init -input=false'
                     sh "terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}"
                     //sh "terraform plan -var-file=${ENVIRONMENT}.tfvars -out=tfplan -input=false"
