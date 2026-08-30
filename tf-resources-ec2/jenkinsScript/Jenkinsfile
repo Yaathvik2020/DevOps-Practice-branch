@@ -1,11 +1,17 @@
 pipeline{
     agent any 
+     parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'stage'], description: 'Target environment')
+    }
     stages{
-        stage('check out scm'){
+            stage('Cleanup') {
+            steps {
+                cleanWs()
+            }
+        }
+        Stage('checkout SCM'{
             steps{
-                sh 'ls -a'
-                //cleanWs()
-                
+               sh 'ls -ltr'          
                // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
             }
         }
