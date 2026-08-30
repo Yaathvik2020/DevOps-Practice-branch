@@ -9,7 +9,7 @@ pipeline{
                 cleanWs()
             }
         }
-        Stage('checkout SCM'{
+        stage('checkout SCM'{
             steps{
                sh 'ls -ltr'          
                // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
@@ -28,28 +28,14 @@ pipeline{
             }
             }
         }
-        }
-        stage('destroy'){
-            steps{
-            withCredentials([[
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-creds'
-                ]]) {
-            dir('tf-resources-ec2'){
-                sh 'terraform destroy -input=false -auto-approve'
-            }
-            }
-        }
-    }
+        }     
 }
 post {
         success {
             echo 'Infra applied successfully.'
-             cleanWs()
         }
         failure {
             echo 'Something went wrong.'
-            cleanWs()
         }
     }
 }
