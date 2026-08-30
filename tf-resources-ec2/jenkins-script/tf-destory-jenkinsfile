@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'stage'], description: 'Environment to destroy')
+    }
+
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+               sh 'ls'
+                //checkout scm
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                sh 'terraform init -input=false'
+            }
+        }
+
+        stage('Select Workspace') {
+            steps {
+                sh """
+                    terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}
+                """
+            }
+        }
+
+        stage('Terraform Plan Destroy') {
+            steps {
+                sh 'terraform plan -destroy -out=tfplan -input=false'
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                script {
+                    timeout(time: 10, unit: 'MINUTES') {
+                        input message: "This will DESTROY all resources in ${ENVIRONMENT}. Proceed?", ok: "Destroy"
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Destroy') {
+            steps {
+                sh 'terraform apply -input=false tfplan'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
