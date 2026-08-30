@@ -25,11 +25,12 @@ pipeline{
                     sh "terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}"
                     //sh "terraform plan -var-file=${ENVIRONMENT}.tfvars -out=tfplan -input=false"
 		            sh 'terraform plan -out=tfplan -input=false'   // ✅ no -var-file needed
-                    script {
-                    timeout(time: 15, unit: 'MINUTES') {
-                    input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"
-                      }
-					}
+					input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"
+                    //script {
+                    //timeout(time: 15, unit: 'MINUTES') {
+                    //input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"
+                    //  }
+					//}
                     sh 'terraform apply -input=false tfplan'               
               }
           }
