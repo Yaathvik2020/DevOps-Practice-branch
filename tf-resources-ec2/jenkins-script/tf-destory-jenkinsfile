@@ -20,22 +20,28 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
+                  dir('tf-resources-ec2') {
+
                 sh 'terraform init -input=false'
             }
         }
-
-        stage('Select Workspace') {
+        }
+         stage('Select Workspace') {
             steps {
+		 dir('tf-resources-ec2') {
                 sh """
                     terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}
                 """
             }
+       	  }
         }
 
         stage('Terraform Plan Destroy') {
             steps {
+                dir('tf-resources-ec2') {
                 sh 'terraform plan -destroy -out=tfplan -input=false'
             }
+         }
         }
 
         stage('Approval') {
@@ -50,8 +56,10 @@ pipeline {
 
         stage('Terraform Destroy') {
             steps {
+             dir('tf-resources-ec2') {
                 sh 'terraform apply -input=false tfplan'
             }
+          }
         }
     }
 
