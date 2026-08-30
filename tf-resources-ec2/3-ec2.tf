@@ -1,5 +1,5 @@
 resource "aws_security_group" "demo_sg" {
-  name        = "demo-instance-sg"
+  name        = "demo-instance-sg-${terraform.workspace}"  # e.g. demo-instance-sg-dev
   description = "Allow SSH and HTTP"
   vpc_id      = data.aws_vpc.selected.id   # ← comes from 2-data.tf
 
@@ -27,7 +27,7 @@ resource "aws_security_group" "demo_sg" {
   }
 
   tags = {
-    Name = "demo-instance-sg"
+    Name = "demo-instance-sg-${terraform.workspace}"
   }
 }
 
@@ -39,7 +39,8 @@ resource "aws_instance" "demo_ec2" {
   vpc_security_group_ids = [aws_security_group.demo_sg.id]
 
   tags = {
-    Name = var.instance_name
+     Name        = "${var.instance_name}-${terraform.workspace}"   # e.g. demo-ec2-dev
+     Environment = terraform.workspace
   }
 }
 
@@ -48,8 +49,7 @@ output "instance_public_ip" {
   value       = aws_instance.demo_ec2.public_ip
 }
 
-output "instance_id" {
-  description = "ID of the EC2 instance"
-  value       = aws_instance.demo_ec2.id
+output "environment" {
+  value = terraform.workspace
 }
 
