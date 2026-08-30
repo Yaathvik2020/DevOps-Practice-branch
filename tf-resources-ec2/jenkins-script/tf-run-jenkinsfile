@@ -9,7 +9,7 @@ pipeline{
               cleanWs()
             }
         }
-       stage('checkout SCM' {
+       stage('checkout SCM') {
             steps{
                sh 'ls -ltr'          
                // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
