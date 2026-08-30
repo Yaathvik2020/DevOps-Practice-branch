@@ -21,6 +21,7 @@ pipeline{
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds'
                 ]]) {
+				dir('tf-resources-ec2') {
                     sh 'terraform init -input=false'
                     sh "terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}"
                     //sh "terraform plan -var-file=${ENVIRONMENT}.tfvars -out=tfplan -input=false"
@@ -31,7 +32,8 @@ pipeline{
                     input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"
                       }
 					}
-                    sh 'terraform apply -input=false tfplan'               
+                    sh 'terraform apply -input=false tfplan' 
+				}					
               }
           }
        }
