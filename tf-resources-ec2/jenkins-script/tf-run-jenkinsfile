@@ -3,19 +3,18 @@ pipeline{
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'stage'], description: 'Target environment')
     }
-    stages{
+    stages {
        stage('Cleanup') {
           steps{
               cleanWs()
             }
         }
-       stage('checkout SCM'{
+       stage('checkout SCM' {
             steps{
                sh 'ls -ltr'          
                // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
-              }
-            }
-	   }
+             }
+       }
        stage('Run All Terraform Steps') {
             steps {
                 withCredentials([[
@@ -26,7 +25,12 @@ pipeline{
                     sh "terraform workspace select ${ENVIRONMENT} || terraform workspace new ${ENVIRONMENT}"
                     //sh "terraform plan -var-file=${ENVIRONMENT}.tfvars -out=tfplan -input=false"
 		            sh 'terraform plan -out=tfplan -input=false'   // ✅ no -var-file needed
-					input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"                  
+					//input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"
+                    script {
+                    timeout(time: 15, unit: 'MINUTES') {
+                    input message: "Apply this plan for ${ENVIRONMENT}?", ok: "Apply"
+                      }
+					}
                     sh 'terraform apply -input=false tfplan'               
               }
           }
