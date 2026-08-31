@@ -11,7 +11,7 @@ pipeline{
         }
        stage('checkout SCM') {
             steps{               
-                git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
+               // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
                 sh 'ls -ltr' 
                
              }
