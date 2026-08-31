@@ -12,8 +12,21 @@ pipeline{
        stage('checkout SCM') {
             steps{               
                 git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
-                sh 'ls -ltr'  
+                sh 'ls -ltr' 
+               
              }
+       }
+      stage('Debug') {
+            steps {
+                sh 'echo "=== pwd ==="'
+                sh 'pwd'
+                sh 'echo "=== Top-level folders ==="'
+                sh 'ls -la'
+                sh 'echo "=== All directories (4 levels deep) ==="'
+                sh 'find . -maxdepth 4 -type d'
+                sh 'echo "=== All .tf files ==="'
+                sh 'find . -name "*.tf"'
+            }
        }
        stage('Run All Terraform Steps') {
             steps {
