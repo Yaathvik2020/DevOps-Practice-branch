@@ -4,11 +4,7 @@ pipeline{
         choice(name: 'ENVIRONMENT', choices: ['dev', 'stage'], description: 'Target environment')
     }
     stages {
-       stage('Cleanup') {
-          steps{
-              cleanWs()
-            }
-        }
+       
        stage('checkout SCM') {
             steps{               
                // git branch: 'main' ,url: 'https://github.com/Yaathvik2020/practice-branch.git'
@@ -50,6 +46,11 @@ pipeline{
               }
           }
        }
+	   stage('Cleanup') {
+          steps{
+              cleanWs()
+            }
+        }
 	}     
 
 post {
