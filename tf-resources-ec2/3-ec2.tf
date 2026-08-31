@@ -42,6 +42,9 @@ resource "aws_instance" "demo_ec2" {
      Name        = "${var.instance_name}-${terraform.workspace}"   # e.g. demo-ec2-dev
      Environment = terraform.workspace
   }
+  timeouts {
+    create = "5m"
+  }
 }
 
 output "instance_public_ip" {
