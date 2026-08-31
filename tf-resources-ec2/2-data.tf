@@ -10,4 +10,9 @@ data "aws_subnets" "available" {
     name   = "vpc-id"
     values = [data.aws_vpc.selected.id]
   }
+
+  filter {
+    name   = "map-public-ip-on-launch"
+    values = ["true"]
+  }
 }
