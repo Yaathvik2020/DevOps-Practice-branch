@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                //checkout scm
+               sh 'ls'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('tf-resources-ec2') {
+                    sh 'terraform init -input=false'
+                }
+            }
+        }
+        stage('Check for Drift') {
+    steps {
+        dir('tf-resources-ec2') {
+            sh "terraform workspace select dev || terraform workspace new dev"
+
+            script {
+                def result = sh(
+                    script: 'terraform plan -detailed-exitcode -out=driftplan -input=false',
+                    returnStatus: true
+                )
+
+                if (result == 0) {
+                    echo "No drift found. Everything matches."
+                }
+                else if (result == 2) {
+                    echo "DRIFT DETECTED! Infrastructure has changed outside of Terraform."
+                }
+                else {
+                    error "Something went wrong running terraform plan"
+                }
+            }
+        }
+    }
+ }
+}
+}
